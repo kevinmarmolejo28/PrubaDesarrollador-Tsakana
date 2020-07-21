@@ -22,7 +22,9 @@ SET time_zone = "+00:00";
 -- Base de datos: `tsakana`
 --
 
--- --------------------------------------------------------
+DROP SCHEMA IF EXISTS `tsakana`;
+CREATE SCHEMA `tsakana`;
+USE `tsakana`;
 
 --
 -- Estructura de tabla para la tabla `cliente`
