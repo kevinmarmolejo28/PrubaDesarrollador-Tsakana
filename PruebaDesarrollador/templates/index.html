@@ -1,0 +1,683 @@
+<!doctype html>
+<html lang="en">
+  <head Cache-Control: no-cache >
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>PRUEBA DE DESARROLLADOR</title>
+
+    <link rel="stylesheet" href="./static/style.css">      
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        var n = 1;
+        var i = 0;
+
+        //ruta de fotos
+        function getImagePath() { 
+            i = i + 1; 
+            return "/static/imagenes/f"+i+".PNG"; 
+        }
+
+        //poner ruta dinamica de fotos
+        function img_src(val) {
+            var a = document.body.getElementsByTagName('IMG');
+            var img = a?a[a.length-1]:0;
+            if (img) img.src = val;
+        }
+
+        //mostrar y ocultar tablas
+        $(document).ready(function(){
+            var elem = document.getElementById("clase");
+            elem.onchange = function(){        
+                if(this.value == "cliente"){
+                    var cliente = document.getElementById("tableCliente");
+                    cliente.style.display = "block";
+
+                    var producto = document.getElementById("tableProducto");
+                    producto.style.display = "none";
+
+                    var factura = document.getElementById("tableFactura");
+                    factura.style.display = "none";
+                }  
+                else if(this.value == "producto"){
+                    var cliente = document.getElementById("tableCliente");
+                    cliente.style.display = "none";
+
+                    var producto = document.getElementById("tableProducto");
+                    producto.style.display = "block";
+
+                    var factura = document.getElementById("tableFactura");
+                    factura.style.display = "none";
+                }    
+                else if(this.value == "factura"){
+                    var cliente = document.getElementById("tableCliente");
+                    cliente.style.display = "none";
+
+                    var producto = document.getElementById("tableProducto");
+                    producto.style.display = "none";
+
+                    var factura = document.getElementById("tableFactura");
+                    factura.style.display = "block";
+                }      
+            };
+        });
+
+        // Crear nuevo input para productos
+        function newInput() {
+        var input = $("<div id='p"+ n +"' class='row form-group'><div class='col'><label>Producto:</label><select class='form-control' name='producto"+ n +"'id='idProducto"+ n +"' required='1'>{% for score in codigos %}<option value={{score.0}}> {{score.0}} </option>{% endfor %}</select></div><div class='col'><label>Cantidad:</label><input type='text' class='form-control' name='cantidad"+ n +"' id='idCantidad "+ n +"' required='1'></div></div>")
+        .prependTo("#idFrmFactura");
+        $("div#p".concat(n-1)).after(input);
+        n = n + 1;
+        $("#idNumProductos").val(n);
+        }
+
+        function deleteInput(){
+            $("div#p".concat(n-1)).remove();
+            n = n - 1;
+            $("#idNumProductos").val(n);
+        }
+
+        //insertar
+        function insertar(){
+            var elem = document.getElementById("clase");
+            var clase = elem.value;
+
+            if(clase == 'cliente'){
+                $("#idCedula").val('');
+                $("#idNombre1").val('');
+                $("#idNombre2").val('');
+                $("#idApellido1").val('');
+                $("#idApellido2").val('');
+                $("#idDireccion").val('');
+                $("#idTelefono").val('');
+                $("#idFoto").val('');
+
+                //Datos de boton y titulo para el modal
+                $("#idBtnOperacionCliente").html('Insertar');
+                $("#idTituloDialogoCliente").html('Insertar cliente');
+
+                //Habilitar los datos
+                $("#idCedula").prop("disabled", false);
+                $("#idNombre1").prop("disabled", false);
+                $("#idNombre2").prop("disabled", false);
+                $("#idApellido1").prop("disabled", false);
+                $("#idApellido2").prop("disabled", false);
+                $("#idDireccion").prop("disabled", false);
+                $("#idTelefono").prop("disabled", false);
+                $("#idFoto").prop("disabled", false);
+
+                //Url de accion
+                $("#idFrmCliente").attr('action', "{{url_for('insertCliente')}}");
+                $('#idDlgCliente').modal('show');
+            }
+
+            else if(clase == 'producto'){
+                $("#idCodigo").val('');
+                $("#idCategoria").val('');
+                $("#idNombre").val('');
+                $("#idPrecio").val('');
+                $("#idStock").val('');
+                $("#idEstado").val('');
+
+                //Datos de boton y titulo para el modal
+                $("#idBtnOperacionProducto").html('Insertar');
+                $("#idTituloDialogoProducto").html('Insertar producto');
+
+                //Habilitar los datos
+                $("#idCodigo").prop("disabled", false);
+                $("#idCategoria").prop("disabled", false);
+                $("#idNombre").prop("disabled", false);
+                $("#idPrecio").prop("disabled", false);
+                $("#idStock").prop("disabled", false);
+                $("#idEstado").prop("disabled", false);
+
+                //Url de accion
+                $("#idFrmProducto").attr('action', "{{url_for('insertProducto')}}");
+                $('#idDlgProducto').modal('show');
+            }
+            
+            else if(clase == 'factura'){
+                var btn = document.getElementById("btnNuevoProducto");
+                btn.style.display = "block";
+
+                $("#idFactura").val('');
+                $("#idNumProductos").val(n);
+                $("#idCodigoF").val('');
+                $("#idCliente").val('');
+                $("#idProducto0").val('');
+                $("#idCantidad0").val('');
+                $("#idFecha").val('');
+                $("#idTotal").val('');
+                $("#idMetodoPago").val('');
+
+                //Datos de boton y titulo para el modal
+                $("#idBtnOperacionFactura").html('Insertar');
+                $("#idTituloDialogoFactura").html('Insertar factura');
+
+                //Habilitar los datos
+                $("#idFactura").prop("disabled", false);
+                $("#idCodigoF").prop("disabled", false);
+                $("#idCliente").prop("disabled", false);
+                $("#idProducto0").prop("disabled", false);
+                $("#idCantidad0").prop("disabled", false);
+                $("#idFecha").prop("disabled", false);
+                $("#idTotal").prop("disabled", true);
+                $("#idMetodoPago").prop("disabled", false);
+
+                //Url de accion
+                $("#idFrmFactura").attr('action', "{{url_for('insertFactura')}}");
+                $('#idDlgFactura').modal('show');
+            }
+        }
+
+        //Editar
+        function editarCliente(cedula, nombre1, nombre2, apellido1, apellido2, direccion, telefono){
+                $("#idCedula").val(cedula);
+                $("#idNombre1").val(nombre1);
+                $("#idNombre2").val(nombre2);
+                $("#idApellido1").val(apellido1);
+                $("#idApellido2").val(apellido2);
+                $("#idDireccion").val(direccion);
+                $("#idTelefono").val(telefono);
+                $("#idFoto").val('');
+
+                //Datos de boton y titulo para el modal
+                $("#idBtnOperacionCliente").html('Editar');
+                $("#idTituloDialogoCliente").html('Editar cliente');
+
+                //Habilitar los datos
+                $("#idCedula").prop("disabled", true);
+                $("#idNombre1").prop("disabled", false);
+                $("#idNombre2").prop("disabled", false);
+                $("#idApellido1").prop("disabled", false);
+                $("#idApellido2").prop("disabled", false);
+                $("#idDireccion").prop("disabled", false);
+                $("#idTelefono").prop("disabled", false);
+                $("#idFoto").prop("disabled", false);
+
+                //Url de accion
+                $("#idFrmCliente").attr('action', '{{url_for("updateCliente")}}');
+                $('#idDlgCliente').modal('show');        
+        }
+
+        //Editar Producto
+        function editarProducto(codigo, categoria, nombre, precio, stock, estado){
+            $("#idCodigo").val(codigo);
+            $("#idCategoria").val(categoria);
+            $("#idNombre").val(nombre);
+            $("#idPrecio").val(precio);
+            $("#idStock").val(stock);
+            $("#idEstado").val(estado);
+
+            //Datos de boton y titulo para el modal
+            $("#idBtnOperacionProducto").html('Editar');
+            $("#idTituloDialogoProducto").html('Editar Cliente');
+
+            //Habilitar los datos
+            $("#idCodigo").prop("disabled", true);
+            $("#idCategoria").prop("disabled", false);
+            $("#idNombre").prop("disabled", false);
+            $("#idPrecio").prop("disabled", false);
+            $("#idStock").prop("disabled", false);
+            $("#idEstado").prop("disabled", false);
+
+            //Url de accion
+            $("#idFrmProducto").attr('action', "{{url_for('updateProducto')}}");
+            $('#idDlgProducto').modal('show');
+        }
+
+        //Editar Factura
+        function editarFactura(id, codigoF, cliente, producto, cantidad, fecha, total, metodoPago){
+            
+            var btn = document.getElementById("btnNuevoProducto");
+            btn.style.display = "none";
+
+            $("#idFactura").val(id);
+            $("#idCodigoF").val(codigoF);
+            $("#idCliente").val(cliente);
+            $("#idProducto0").val(producto);
+            $("#idCantidad0").val(cantidad);
+            $("#idFecha").val(fecha);
+            $("#idTotal").val(total);
+            $("#idMetodoPago").val(metodoPago);
+
+            //Datos de boton y titulo para el modal
+            $("#idBtnOperacionFactura").html('Editar');
+            $("#idTituloDialogoFactura").html('Editar Cliente');
+
+            //Habilitar los datos
+            $("#id").prop("disabled", true);
+            $("#idCodigoF").prop("disabled", true);
+            $("#idCliente").prop("disabled", false);
+            $("#idProducto0").prop("disabled", true);
+            $("#idCantidad0").prop("disabled", false);
+            $("#idFecha").prop("disabled", false);
+            $("#idTotal").prop("disabled", true);
+            $("#idMetodoPago").prop("disabled", false);
+
+            //Url de accion
+            $("#idFrmFactura").attr('action', "{{url_for('updateFactura')}}");
+            $('#idDlgFactura').modal('show');
+        }
+
+        //Eliminar
+        function eliminarCliente(cedula, nombre1, nombre2, apellido1, apellido2, direccion, telefono){
+            $("#idCedula").val(cedula);
+            $("#idNombre1").val(nombre1);
+            $("#idNombre2").val(nombre2);
+            $("#idApellido1").val(apellido1);
+            $("#idApellido2").val(apellido2);
+            $("#idDireccion").val(direccion);
+            $("#idTelefono").val(telefono);
+            $("#idFoto").val(foto);
+
+            //Datos de boton y titulo para el modal
+            $("#idBtnOperacionCliente").html('Eliminar');
+            $("#idTituloDialogoCliente").html('Eliminar cliente');
+
+            //Habilitar los datos
+            $("#idCedula").prop("disabled", true);
+            $("#idNombre1").prop("disabled", true);
+            $("#idNombre2").prop("disabled", true);
+            $("#idApellido1").prop("disabled", true);
+            $("#idApellido2").prop("disabled", true);
+            $("#idDireccion").prop("disabled", true);
+            $("#idTelefono").prop("disabled", true);
+            $("#idFoto").prop("disabled", true);
+
+            //Url de accion
+            $("#idFrmCliente").attr('action', '{{url_for("delete")}}');
+            $('#idDlgCliente').modal('show');        
+        }
+    </script>
+  </head>
+  <body>
+
+    <div class="container mb-3">
+        <div class="card card-body bg-light text-center">
+            <h3>PRUEBA DE DESARROLLADOR</h3>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="form-inline">
+            <div class="form-group mb-2">
+                <label class="input-group-text" for="inputGroupSelect01">Lista de:</label>
+            </div>
+
+            <div class="form-group mx-sm-3 mb-2">
+                <select class="custom-select" name="clase" id="clase">
+                    <option value="cliente">Clientes</option>
+                    <option value="producto">Productos</option>
+                    <option value="factura">Facturas</option>
+                </select>
+            </div>
+
+            <div class="input-group-prepend form-group mb-2">
+                <button id="prubeaBtn" type="button" class="btn btn-success"
+                onclick="insertar()">
+                Agregar
+                </button>
+            </div>
+        </div>
+
+        <!--Mensaje flash-->
+        {%with messages = get_flashed_messages(with_categories=true)%}
+
+            <!--Verificamos si hay mensaje-->
+            {%if messages %}
+                <!--Ciclo para cada mensaje-->
+                {%for category, message in messages%}
+                    <!--Mostrar mensaje-->
+                    <div class="alert {{category}}">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="close">
+                            <span aria-hidden="true">x</span>
+                        </button>
+                        {{message}}
+                    </div>
+                {%endfor%}
+            {%endif%}
+        {%endwith%}
+
+        <div id="tableCliente" class="table-responsive" style="display: block;">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-center">Cédula</th>
+                        <th class="text-center">Primer Nombre</th>
+                        <th class="text-center">Segundo Nombre</th>
+                        <th class="text-center">Primer apellido</th>
+                        <th class="text-center">Segundo apellido</th>
+                        <th class="text-center">Dirección</th>
+                        <th class="text-center">Teléfono</th>
+                        <th class="text-center">Foto</th>
+                        <th class="text-center">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--Ciclo para cada registro-->
+                    {%for registro in clientes%}
+                    <tr>
+                        <td class="text-center align-middle">{{registro.0}}</td>
+                        <td class="text-center align-middle">{{registro.1}}</td>
+                        <td class="text-center align-middle">{{registro.2}}</td>
+                        <td class="text-center align-middle">{{registro.3}}</td>
+                        <td class="text-center align-middle">{{registro.4}}</td>
+                        <td class="text-center align-middle">{{registro.5}}</td>
+                        <td class="text-center align-middle">{{registro.6}}</td>
+                        <td class="text-center align-middle"><img style="width: 5rem;"><script>img_src(getImagePath())</script></td>
+                        
+                        <td class="text-center align-middle">
+                            <button type="button" onclick="editarCliente('{{registro.0}}','{{registro.1}}','{{registro.2}}','{{registro.3}}','{{registro.4}}','{{registro.5}}','{{registro.6}}')"><i href="" class="btn fas fa-pen"></i></button>
+                            <button type="button" onclick="eliminarCliente('{{registro.0}}','{{registro.1}}','{{registro.2}}','{{registro.3}}','{{registro.4}}','{{registro.5}}','{{registro.6}}')"><i href="" class="btn fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                    
+                </tbody>
+            </table>
+        </div>
+
+        <div id="tableProducto" class="table-responsive" style="display: none;">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-center">Código</th>
+                        <th class="text-center">Categoría</th>
+                        <th class="text-center">Nombre</th>
+                        <th class="text-center">Precio</th>
+                        <th class="text-center">Stock</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--Ciclo para cada registro-->
+                    {%for registro in productos%}
+                    <tr>
+                        <td class="text-center align-middle">{{registro.0}}</td>
+                        <td class="text-center align-middle">{{registro.1}}</td>
+                        <td class="text-center align-middle">{{registro.2}}</td>
+                        <td class="text-center align-middle">{{registro.3}}</td>
+                        <td class="text-center align-middle">{{registro.4}}</td>
+                        <td class="text-center align-middle">{{registro.5}}</td>
+                        
+                        <td class="text-center align-middle">
+                            <button type="button" onclick="editarProducto('{{registro.0}}','{{registro.1}}','{{registro.2}}','{{registro.3}}','{{registro.4}}','{{registro.5}}')"><i href="" class="btn fas fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                    
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="tableFactura" class="table-responsive" style="display: none;">
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th class="text-center">Código</th>
+                        <th class="text-center">Cliente</th>
+                        <th class="text-center">Producto</th>
+                        <th class="text-center">Cantidad</th>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Total</th>
+                        <th class="text-center">Metodo de pago</th>
+                        <th class="text-center">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--Ciclo para cada registro-->
+                    {%for registro in facturas%}
+                    <tr>
+                        <td class="text-center align-middle">{{registro.1}}</td>
+                        <td class="text-center align-middle">{{registro.2}}</td>
+                        <td class="text-center align-middle">{{registro.3}}</td>
+                        <td class="text-center align-middle">{{registro.4}}</td>
+                        <td class="text-center align-middle">{{registro.5}}</td>
+                        <td class="text-center align-middle">{{registro.6}}</td>
+                        <td class="text-center align-middle">{{registro.7}}</td>
+                        
+                        <td class="text-center align-middle">
+                            <button type="button" onclick="editarFactura('{{registro.0}}','{{registro.1}}','{{registro.2}}','{{registro.3}}','{{registro.4}}','{{registro.5}}','{{registro.6}}','{{registro.7}}')"><i href="" class="btn fas fa-pen"></i></button>
+                        </td>
+                    </tr>
+                    {%endfor%}
+                    
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="container mb-3">
+        <button id="prubeaBtn" type="button" class="btn btn-success" onclick="location.href = 'consulta';">Buscar Facturas</button>
+    </div>
+
+    <div class="container">
+        <div class="card card-body bg-light text-right">
+            <h6>Desarrollado por: Kevin Marmolejo Solis</h6>
+        </div>
+    </div>
+
+    <!-- Modal Cliente -->
+    <div class="modal fade" id="idDlgCliente" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="idTituloDialogoCliente">I</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" id="idFrmCliente" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label>Cédula:</label>
+                            <input type="text" class="form-control" name="cedula" id="idCedula" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Primer nombre:</label>
+                            <input type="text" class="form-control" name="primerNombre"  id="idNombre1" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Segundo nombre:</label>
+                            <input type="text" class="form-control" name="segundoNombre" id="idNombre2">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Primer apellido:</label>
+                            <input type="text" class="form-control" name="primerApellido" id="idApellido1" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Segundo apellido:</label>
+                            <input type="text" class="form-control" name="segundoApellido" id="idApellido2" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Dirección:</label>
+                            <input type="text" class="form-control" name="direccion" id="idDireccion" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Teléfono:</label>
+                            <input type="text" class="form-control" name="telefono" id="idTelefono" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputfile">Foto:</label>
+                            <!--<input type="text" class="form-control" name="foto" id="idFoto" required="1">-->
+                            <input type="file" name="inputfile">
+                        </div>
+                        
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button id="idBtnOperacionCliente" onclick="$('#idCedula').prop('disabled', false)" type="submit" class="btn btn-primary">Insertar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Producto -->
+    <div class="modal fade" id="idDlgProducto" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="idTituloDialogoProducto">I</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" id="idFrmProducto" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label>Código:</label>
+                            <input type="text" class="form-control" name="codigo" id="idCodigo" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Categoría:</label>
+                            <input type="text" class="form-control" name="categoria" id="idCategoria" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nombre:</label>
+                            <input type="text" class="form-control" name="nombre"  id="idNombre" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Precio:</label>
+                            <input type="text" class="form-control" name="precio" id="idPrecio" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Stock:</label>
+                            <input type="text" class="form-control" name="stock" id="idStock" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Estado:</label>
+                            <select class="form-control" name="estado" id="idEstado" required="1">
+                                <option value="Activo"> Activo </option>
+                                <option value="Inactivo"> Inactivo </option>
+                            </select>   
+                        </div>                        
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button id="idBtnOperacionProducto" onclick="$('#idCodigo').prop('disabled', false)" type="submit" class="btn btn-primary">Insertar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Factura -->
+    <div class="modal fade" id="idDlgFactura" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title" id="idTituloDialogoFactura">I</h6>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" id="idFrmFactura" enctype="multipart/form-data">
+                        <div class="form-group" style="display: none;">
+                            <label>id:</label>
+                            <input type="text" class="form-control" name="factura" id="idFactura">
+                        </div>
+
+                        <div class="form-group" style="display: none;">
+                            <label>productos:</label>
+                            <input type="text" class="form-control" name="numProductos" id="idNumProductos">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Código:</label>
+                            <input type="text" class="form-control" name="codigoF" id="idCodigoF" required="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Cliente:</label>
+                            <select class="form-control" name="cliente" id="idCliente" required="1">
+                                {% for score in cedulas %}
+                                <option value={{score.0}}> {{score.0}} </option>
+                                {% endfor %}
+                            </select>                            
+                        </div>                        
+
+                        <div id="p0" class="row form-group">
+                            <div class="col">
+                                <label>Producto:</label>
+                                <select class="form-control" name="producto0"  id="idProducto0" required="1">
+                                    {% for score in codigos %}
+                                    <option value={{score.0}}> {{score.0}} </option>
+                                    {% endfor %}
+                                </select>  
+                            </div>
+
+                            <div class="col">
+                                <label>Cantidad:</label>
+                                <input type="text" class="form-control" name="cantidad0" id="idCantidad0" required="1">
+                            </div>                            
+                        </div>
+
+                        <div id="btnNuevoProducto" class="form-group">
+                            <div class="d-inline p-2">
+                                <label>Nuevo producto:</label>                
+                            </div>        
+                            <div class="d-inline p-2">
+                                <button  type="button" onclick="newInput()"><i href="" class="btn fas fa-pen"></i></button>
+                            </div>
+                            <div class="d-inline p-2">
+                                <button  type="button" onclick="deleteInput()"><i href="" class="btn fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        
+
+                        <div class="form-group">
+                            <label>Fecha (yyyy-mm-dd):</label>
+                            <input type="text" class="form-control" name="fecha" id="idFecha" required="1">
+                        </div>
+
+                        <div id="totalFactura" class="form-group">
+                            <label>Total:</label>
+                            <input type="text" class="form-control" name="total" id="idTotal">
+                        </div>  
+                        
+                        <div class="form-group">
+                            <label>Metodo de pago:</label>
+                            <input type="text" class="form-control" name="metodoPago" id="idMetodoPago" required="1">
+                        </div> 
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button id="idBtnOperacionFactura" onclick="$('#idFactura').prop('disabled', false); $('#idCodigoF').prop('disabled', false); $('#idTotal').prop('disabled', false);  $('#idProducto0').prop('disabled', false)" type="submit" class="btn btn-primary">Insertar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
