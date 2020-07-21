@@ -1,4 +1,4 @@
-# PrubaDesarrollador-Tsakana
+# Prueba Desarrollador-Tsakana
  Prueba de desarrollador para la empresa Tsakana. Realizada por: Kevin Marmolejo Solis.
  
  # Punto 1
