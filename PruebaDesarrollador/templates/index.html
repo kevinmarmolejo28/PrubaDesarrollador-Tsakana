@@ -83,9 +83,11 @@
         }
 
         function deleteInput(){
-            $("div#p".concat(n-1)).remove();
-            n = n - 1;
-            $("#idNumProductos").val(n);
+            if(n > 1){
+                $("div#p".concat(n-1)).remove();
+                n = n - 1;
+                $("#idNumProductos").val(n);
+            }            
         }
 
         //insertar
@@ -280,7 +282,6 @@
             $("#idApellido2").val(apellido2);
             $("#idDireccion").val(direccion);
             $("#idTelefono").val(telefono);
-            $("#idFoto").val(foto);
 
             //Datos de boton y titulo para el modal
             $("#idBtnOperacionCliente").html('Eliminar');
@@ -302,6 +303,7 @@
         }
     </script>
   </head>
+
   <body>
 
     <div class="container mb-3">
@@ -647,10 +649,10 @@
                                 <label>Nuevo producto:</label>                
                             </div>        
                             <div class="d-inline p-2">
-                                <button  type="button" onclick="newInput()"><i href="" class="btn fas fa-pen"></i></button>
+                                <button  type="button" onclick="newInput()"><i href="" class="btn fas fa-plus"></i></button>
                             </div>
                             <div class="d-inline p-2">
-                                <button  type="button" onclick="deleteInput()"><i href="" class="btn fas fa-trash"></i></button>
+                                <button  type="button" onclick="deleteInput()"><i href="" class="btn fas fa-minus"></i></button>
                             </div>
                         </div>
                         

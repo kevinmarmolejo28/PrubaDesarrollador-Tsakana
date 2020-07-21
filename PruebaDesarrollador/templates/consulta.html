@@ -30,7 +30,7 @@
                 <form action="{{url_for('search')}}" method="post" id="idFrmBuscar">
                     <div class="form-inline">
                         <div class="form-group mb-2 w-25">
-                            <label class="input-group-text w-100" for="inputGroupSelect01">Codigo de factura:</label>
+                            <label class="input-group-text w-100" for="inputGroupSelect01">Codigo:</label>
                         </div>
                         <div class="form-group mx-sm-3 mb-2">
                             <input type="text" class="form-control" name="codigoFactura"  id="idcodigoFactura" required="1" value="{{codigo}}">
@@ -42,7 +42,7 @@
         
                     <div class="form-inline">
                         <div class="form-group mb-2 w-25">
-                            <label class="input-group-text w-100" for="inputGroupSelect01">Total de factura:</label>
+                            <label class="input-group-text w-100" for="inputGroupSelect01">Total:</label>
                         </div>
                         <div class="form-group mx-sm-3 mb-2">
                             <input type="text" class="form-control" name="totalFactura"  id="idTotalFactura" value="{{total}}">
